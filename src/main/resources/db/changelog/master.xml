@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="gwodzinski" id="initial-schema">
+        <createTable tableName="author">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="quote">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="content" type="varchar(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                constraintName="fk_quote_author"
+                referencedTableName="author"
+                baseColumnNames="author_id"
+                baseTableName="quote" referencedColumnNames="id"/>
+        <addUniqueConstraint
+                columnNames="first_name,last_name"
+                constraintName="unique_author"
+                tableName="author"/>
+        <addUniqueConstraint
+                columnNames="content,author_id"
+                constraintName="unique_quote"
+                tableName="quote"/>
+    </changeSet>
+    <changeSet author="gwodzinski" id="init-data">
+        <sql dbms="h2">
+            insert into author (id, first_name, last_name)
+            values (1, 'John', 'Doe');
+
+            insert into quote (id, content, author_id)
+            values (1, 'Lorem ipsum', 1);
+            insert into quote (id, content, author_id)
+            values (2, 'dolor sit amet, consectetur adipiscing elit', 1);
+        </sql>
+    </changeSet>
+</databaseChangeLog>
